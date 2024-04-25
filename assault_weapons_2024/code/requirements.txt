@@ -3,3 +3,4 @@ icecream
 openpyxl
 plotly
 XlsxWriter
+kaleido
