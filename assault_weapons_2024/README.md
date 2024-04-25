@@ -2,6 +2,13 @@
 
 Goal is to predict support for 4 laws in all US congressional districts.
 
+Directories:
+* ./code : python code a requirements for data processing and analyses
+* ./input_data : copies of external data and a copy data from a
+  Survey Monkey poll on assault weapons
+* ./processed_data : intermediate data files and excel summary of this analysis
+* ./plots : some graphic output of analyses
+
 # Steps to repeat analysis published at XXX
 
 ## set up environment:
@@ -32,8 +39,11 @@ python export_data_to_excel.py
 
 # Data sources:
 https://www.rand.org/content/dam/rand/pubs/tools/TL300/TL354/RAND_TL354.database.zip
+
 https://www.pewresearch.org/religion/religious-landscape-study/compare/party-affiliation/by/state#party-affiliation
+
 https://raw.githubusercontent.com/fivethirtyeight/data/master/partisan-lean/fivethirtyeight_partisan_lean_DISTRICTS.csv
+
 https://raw.githubusercontent.com/fivethirtyeight/data/master/gop-delegate-benchmarks-2024/delegate_targets.csv
 
 Private Survey Monkey survey
