@@ -11,7 +11,7 @@ Directories:
 * ./processed_data : intermediate data files and excel summary of this analysis
 * ./plots : some graphic output of analyses
 
-# Steps to repeat analysis published at XXX
+# Steps to repeat published analysis
 
 ## set up environment:
 cd models
