@@ -2,6 +2,8 @@
 
 Goal is to predict support for 4 laws in all US congressional districts.
 
+Results were published at https://medium.com/finding-democracy/americans-in-all-congressional-districts-strongly-support-background-checks-and-safe-storage-laws-de954760fee5
+
 Directories:
 * ./code : python code a requirements for data processing and analyses
 * ./input_data : copies of external data and a copy data from a

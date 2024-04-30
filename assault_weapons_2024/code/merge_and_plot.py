@@ -45,13 +45,9 @@ else:
     Y_AXIS_NAME = "Minimum Support for Assault Weapon Laws (%)"
 
 if BODY == "house":
-    X_AXIS_NAME = (
-        "Percent of US Congressional Districts (%)"
-    )
+    X_AXIS_NAME = "Percent of US Congressional Districts (%)"
 else:
-    X_AXIS_NAME = (
-        "Percent of US Senate Districts (%)"
-    )
+    X_AXIS_NAME = "Percent of US Senate Districts (%)"
 
 PLOT_FILE_NAME = f"assault-weapon-law-support-{BODY}"
 
@@ -62,30 +58,30 @@ SYMBOL_LIST = ["circle", "circle", "circle", "circle"]
 
 # RGB equivalent
 COLOR_LIST = [
-    'rgb(31, 119, 180)',  # RGB for "#1f77b4"
-    'rgb(44, 160, 44)',  # RGB for "#2ca02c"
-    'rgb(214, 39, 40)',  # RGB for "#d62728"
-    'rgb(255, 127, 14)',  # RGB for "#ff7f0e"
+    "rgb(31, 119, 180)",  # RGB for "#1f77b4"
+    "rgb(44, 160, 44)",  # RGB for "#2ca02c"
+    "rgb(214, 39, 40)",  # RGB for "#d62728"
+    "rgb(255, 127, 14)",  # RGB for "#ff7f0e"
 ]
 COLOR_LIST_ERRORS = [
-    'rgba(31, 119, 180, 0.3)',  # RGB for "#1f77b4"
-    'rgba(44, 160, 44, 0.3)',  # RGB for "#2ca02c"
-    'rgba(214, 39, 40, 0.3)',  # RGB for "#d62728"
-    'rgba(255, 127, 14, 0.3)',  # RGB for "#ff7f0e"
+    "rgba(31, 119, 180, 0.3)",  # RGB for "#1f77b4"
+    "rgba(44, 160, 44, 0.3)",  # RGB for "#2ca02c"
+    "rgba(214, 39, 40, 0.3)",  # RGB for "#d62728"
+    "rgba(255, 127, 14, 0.3)",  # RGB for "#ff7f0e"
 ]
 
 SORTED_COLUMNS = {
-    'for_background_checks_True_full_sample_mean': "For Background Checks",
-    'for_safe_storage_laws_True_full_sample_mean': "For Safe Storage Laws",
-    'for_assault_weapon_ban_True_full_sample_mean': "For Assault Weapon Ban",
-    'for_large_magazine_ban_True_full_sample_mean': "For Large Magazine Ban",
+    "for_background_checks_True_full_sample_mean": "For Background Checks",
+    "for_safe_storage_laws_True_full_sample_mean": "For Safe Storage Laws",
+    "for_assault_weapon_ban_True_full_sample_mean": "For Assault Weapon Ban",
+    "for_large_magazine_ban_True_full_sample_mean": "For Large Magazine Ban",
 }
 
 SORTED_ERROR_COLUMNS = [
-    'for_background_checks_True_full_sample_stderr',
-    'for_safe_storage_laws_True_full_sample_stderr',
-    'for_assault_weapon_ban_True_full_sample_stderr',
-    'for_large_magazine_ban_True_full_sample_stderr',
+    "for_background_checks_True_full_sample_stderr",
+    "for_safe_storage_laws_True_full_sample_stderr",
+    "for_assault_weapon_ban_True_full_sample_stderr",
+    "for_large_magazine_ban_True_full_sample_stderr",
 ]
 
 ANNOTATION_LIST = [
@@ -112,8 +108,8 @@ ANNOTATION_LIST = [
         "ax": -80,
         "ay": -90,
     },
-
 ]
+
 
 def merge_data():
     dfs = {}
@@ -131,7 +127,7 @@ def merge_data():
 
 
 def make_plots(dfs):
-    def hover_info(row, data_name, mean_col):
+    def hover_info(row, name, data_name, mean_col):
         result = (
             f"Data: {data_name}<br>"
             f"Support: {row[mean_col]:.1f}%<br>"
@@ -139,21 +135,19 @@ def make_plots(dfs):
         )
         if BODY == "house":
             result += f"District: {row['district']}<br>"
-        result += (
-            f"Lean: {row['partisan_lean (%)']:.1f}%<br>"
-            f"Gun ownership: {row['gun_owner_fraction_right_only']:.1f}%<br>"
-        )
+        if name != "Republican and Conservative Voters Only":
+            result += f"Lean: {row['partisan_lean (%)']:.1f}%<br>"
+        result += f"Gun ownership: {row['gun_owner_fraction_right_only']:.1f}%<br>"
         return result
 
-    def label_info(row, data_name, mean_col):
+    def label_info(row, name, data_name, mean_col):
         result = (
-            f"{data_name} ({row['district']})<br>"
-            f"Support: {row[mean_col]:.0f}%; "
-            f"Lean: {row['partisan_lean (%)']:.0f}%; "
-            f"Gun ownership: {row['gun_owner_fraction_right_only']:.0f}%"
+            f"{data_name} ({row['district']})<br>" f"Support: {row[mean_col]:.0f}%; "
         )
+        if name != "Republican and Conservative Voters Only":
+            result += f"Lean: {row['partisan_lean (%)']:.0f}%; "
+        result += f"Gun ownership: {row['gun_owner_fraction_right_only']:.0f}%"
         return result
-
 
     scatter_list = []
     df_index = -1
@@ -189,7 +183,9 @@ def make_plots(dfs):
             else:
                 data_name = mean_col
             df = df.sort_values(by=mean_col)
-            df["hover_info"] = df.apply(hover_info, args=(data_name, mean_col), axis=1)
+            df["hover_info"] = df.apply(
+                hover_info, args=(name, data_name, mean_col), axis=1
+            )
             scatter_dict = {
                 "x": df["index"],
                 "mode": "markers",
@@ -228,7 +224,7 @@ def make_plots(dfs):
                 ic(df.head())
                 row = df.iloc[index]
                 ic(row)
-                text = label_info(row, data_name, data_name)
+                text = label_info(row, name, data_name, data_name)
                 ic(df["index"].iloc[index])
                 ic(df[data_name].iloc[index])
                 fig.add_annotation(
@@ -243,28 +239,28 @@ def make_plots(dfs):
                     arrowhead=2,  # arrowhead style
                     arrowsize=1,  # arrow size
                     arrowwidth=2,  # arrow width
-                    arrowcolor='black',  # arrow color
-                    bordercolor='black',  # box border color
+                    arrowcolor="black",  # arrow color
+                    bordercolor="black",  # box border color
                     borderwidth=2,  # box border width
                     borderpad=4,  # box padding
-                    bgcolor='lightgrey',  # box background color
+                    bgcolor="lightgrey",  # box background color
                 )
                 # fig.add_annotation(
-#     x=x[2],  # x-coordinate of the point to label
-#     y=y[2],  # y-coordinate of the point to label
-#     text='C',  # label text
-#     showarrow=True,  # show arrow
-#     arrowhead=2,  # arrowhead style
-#     arrowsize=1,  # arrow size
-#     arrowwidth=2,  # arrow width
-#     arrowcolor='blue',  # arrow color
-#     ax=20,  # arrow x-offset
-#     ay=-40,  # arrow y-offset
-#     bordercolor='black',  # box border color
-#     borderwidth=2,  # box border width
-#     borderpad=4,  # box padding
-#     bgcolor='lightgrey',  # box background color
-# )
+            #     x=x[2],  # x-coordinate of the point to label
+            #     y=y[2],  # y-coordinate of the point to label
+            #     text='C',  # label text
+            #     showarrow=True,  # show arrow
+            #     arrowhead=2,  # arrowhead style
+            #     arrowsize=1,  # arrow size
+            #     arrowwidth=2,  # arrow width
+            #     arrowcolor='blue',  # arrow color
+            #     ax=20,  # arrow x-offset
+            #     ay=-40,  # arrow y-offset
+            #     bordercolor='black',  # box border color
+            #     borderwidth=2,  # box border width
+            #     borderpad=4,  # box padding
+            #     bgcolor='lightgrey',  # box background color
+            # )
             fig.update_layout(
                 title=f"{name}",
                 xaxis_title=X_AXIS_NAME,
@@ -272,9 +268,8 @@ def make_plots(dfs):
             )
             fig.show()
             file_path = os.path.join(PLOTS_DIR, f"{PLOT_FILE_NAME}-{name}.png")
-            pio.write_image(fig, file_path, format='png')
+            pio.write_image(fig, file_path, format="png")
             print(f"Plot saved to: {file_path}")
-
 
     if MERGE_PLOTS:
         fig = go.Figure(data=scatter_list)
