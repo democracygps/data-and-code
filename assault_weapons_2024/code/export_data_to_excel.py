@@ -93,6 +93,14 @@ def make_pivot_table(df_poll):
             "label": ("Republican or conservative", "non-owner"),
         },
         {
+            "predictors": {"political_lean": "center", "is_gun_owner": True},
+            "label": ("Independent", "gun owner"),
+        },
+        {
+            "predictors": {"political_lean": "center", "is_gun_owner": False},
+            "label": ("Independent", "non-owner"),
+        },
+        {
             "predictors": {"political_lean": "left", "is_gun_owner": True},
             "label": ("Democrat or liberal", "gun owner"),
         },
@@ -142,6 +150,12 @@ if __name__ == "__main__":
         df = rename_columns(df)
         df_list.append(df)
     sheet_names = ["Summary", "All Voters", "Right-Leaning Voters"]
+    sheet_names = [
+        "Summary",
+        "Summary with Independents",
+        "All Voters",
+        "Right-Leaning Voters",
+    ]
     with pd.ExcelWriter(EXCEL_FILE_PATH, engine="xlsxwriter") as writer:
         for df, sheet_name in zip(df_list, sheet_names):
             df.to_excel(writer, sheet_name=sheet_name)
